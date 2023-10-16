@@ -1,0 +1,29 @@
+#container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.header {
+  width: 100%;
+  height: 50px;
+}
+
+.body {
+  width: 100%;
+  flex: 1;
+  display: flex;
+}
+
+.body-left {
+  width: 240px;
+}
+
+.body-center {
+  flex: 1;
+}
+
+.body-right {
+  width: 240px;
+}
