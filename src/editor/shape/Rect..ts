@@ -1,14 +1,10 @@
-import Shape, {ShapeOptions} from './Shape';
-
-export interface RectOptions extends ShapeOptions {
-  cx: number;
-  cy: number;
-}
+import { IRect } from '../type';
+import Shape from './Shape';
 export default class Rect extends Shape {
   cx: number = 0;
   cy: number = 0;
 
-  constructor(options: RectOptions) {
+  constructor(options: IRect) {
     super(options);
     const { cx, cy } = options;
     cx && (this.cx = cx);
