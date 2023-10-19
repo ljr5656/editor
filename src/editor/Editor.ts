@@ -1,4 +1,6 @@
+import Scene from './scene';
 import Setting from './setting';
+import ToolManager from './tools/toolManager';
 import { viewportCoordsToSceneUtil } from './utils';
 import ViewportManager from './viewportManager';
 import ZoomManager from './zoomManager';
@@ -13,15 +15,23 @@ export default class Editor {
   setting: Setting;
   zoomManager: ZoomManager;
   viewportManager: ViewportManager;
+  scene: Scene;
+  toolManager: ToolManager;
   constructor(options: EditorOptions) {
     const { container } = options;
     this.container = container;
 
+    this.createCanvas();
     this.setting = new Setting();
+    this.setting.set('offsetX', this.container.offsetLeft);
+    this.setting.set('offsetY', this.container.offsetTop);
+
     this.zoomManager = new ZoomManager(this);
     this.viewportManager = new ViewportManager(this);
+    this.toolManager = new ToolManager(this);
+    this.scene = new Scene(this);
 
-    this.createCanvas();
+    this.scene.render();
   }
 
   createCanvas() {

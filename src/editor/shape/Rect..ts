@@ -10,4 +10,11 @@ export default class Rect extends Shape {
     cx && (this.cx = cx);
     cy && (this.cy = cy);
   }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    const { x, y, width, height } = this;
+    ctx.save();
+    ctx.strokeRect(x, y, width, height);
+    ctx.restore();
+  }
 }

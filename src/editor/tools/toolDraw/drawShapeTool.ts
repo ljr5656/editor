@@ -1,12 +1,11 @@
-import { ThunderboltFilled } from '@ant-design/icons';
 import Editor from '../../editor';
-import { IPoint, ITool, ToolType } from '../../type';
+import { IPoint, IRect, ITool, ToolType } from '../../type';
 import Shape from '../../shape/Shape';
 
-export abstract class DrawGraphTool implements ITool {
+export default abstract class DrawShapeTool implements ITool {
   hotkey = '';
   type = ToolType.DrawShape;
-  protected drawingGraph: Shape | null = null;
+  protected drawingShape: Shape | null = null;
   private startPoint: IPoint = { x: -1, y: -1 };
   private lastDragPoint!: IPoint;
   private lastDragPointInViewport!: IPoint;
@@ -26,7 +25,7 @@ export abstract class DrawGraphTool implements ITool {
       e,
       this.editor.setting.get('snapToPixelGrid'),
     );
-    this.drawingGraph = null;
+    this.drawingShape = null;
     this.isDragging = false;
   }
 
@@ -37,10 +36,47 @@ export abstract class DrawGraphTool implements ITool {
       e,
       this.editor.setting.get('snapToPixelGrid'),
     );
-    // this.updateShape();
+    console.log(this.lastDragPoint);
+    this.updateRect();
   }
 
   end() {}
 
   afterEnd() {}
+
+  updateRect() {
+    if (!this.isDragging) return;
+
+    const { lastDragPoint, editor, startPoint } = this;
+    const { scene } = editor;
+    const { x: startX, y: startY } = startPoint;
+    const { x, y } = lastDragPoint;
+
+    const width = x - startX;
+    const height = y - startY;
+
+    const rect = {
+      x: startX,
+      y: startY,
+      width,
+      height,
+    };
+    if (this.drawingShape) {
+      this.updateShape(rect);
+    } else {
+      const shape = this.createShape(rect)!;
+      scene.addShape(shape);
+      this.drawingShape = shape;
+    }
+
+    scene.render();
+  }
+  updateShape(rect: IRect) {
+    const drawingShape = this.drawingShape!;
+    drawingShape.x = rect.x;
+    drawingShape.y = rect.y;
+    drawingShape.width = rect.width;
+    drawingShape.height = rect.height;
+  }
+  protected abstract createShape(rect: IRect, noMove?: boolean): Shape | null;
 }
