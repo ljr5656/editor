@@ -1,5 +1,5 @@
 import Editor from '../../editor';
-import { IPoint, IRect, ITool, ToolType } from '../../type';
+import { ECursorType, IPoint, IRect, ITool, ToolType } from '../../type';
 import Shape from '../../shape/Shape';
 
 export default abstract class DrawShapeTool implements ITool {
@@ -13,9 +13,13 @@ export default abstract class DrawShapeTool implements ITool {
 
   constructor(private editor: Editor) {}
 
-  active() {}
+  active() {
+    this.editor.setCursor(ECursorType.Crosshair);
+  }
 
-  inactive() {}
+  inactive() {
+    this.editor.setCursor(ECursorType.Default);
+  }
 
   moveExcludeDrag() {}
 

@@ -32,3 +32,7 @@ export const sceneCoordsToViewportUtil = (
     y: (y - scrollY) * zoom,
   };
 };
+
+export const getDevicePixelRatio = () => {
+  return window.devicePixelRatio || 1;
+};

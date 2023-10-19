@@ -1,13 +1,17 @@
 import { Radio } from 'antd';
 import { EditorContext } from '../../context';
 import { useContext } from 'react';
+import { ToolType } from '../../editor/type';
 const Toolbar = () => {
   const editor = useContext(EditorContext);
   const onChange = (e) => {
     switch (e.target.value as string) {
       case 'move':
+        debugger;
+        editor?.toolManager.setActiveTool(ToolType.DragCanvas);
         break;
       case 'rect':
+        editor?.toolManager.setActiveTool(ToolType.DrawRect);
         break;
       case 'zoomIn':
         editor?.zoomIn();

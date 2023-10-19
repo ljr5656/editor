@@ -1,6 +1,7 @@
 import Scene from './scene';
 import Setting from './setting';
 import ToolManager from './tools/toolManager';
+import { ECursorType } from './type';
 import { viewportCoordsToSceneUtil } from './utils';
 import ViewportManager from './viewportManager';
 import ZoomManager from './zoomManager';
@@ -44,6 +45,7 @@ export default class Editor {
     canvas.height = container.offsetHeight;
     canvas.width = container.offsetWidth;
     container.appendChild(canvas);
+    canvas.editor = this;
   }
 
   getCursorXY(event: { clientX: number; clientY: number }) {
@@ -60,6 +62,10 @@ export default class Editor {
     const zoom = this.zoomManager.getZoom();
     const { x: scrollX, y: scrollY } = this.viewportManager.getViewport();
     return viewportCoordsToSceneUtil(x, y, zoom, scrollX, scrollY, round);
+  }
+
+  setCursor(cursor: ECursorType) {
+    this.canvasElement.style.cursor = cursor;
   }
 
   zoomIn() {}

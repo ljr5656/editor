@@ -1,6 +1,7 @@
 import Editor from '../editor';
 import EventEmitter from '../eventEmitter';
 import { ITool, ToolType } from '../type';
+import DragCanvasTool from './dragCanvasTool';
 import DrawRectTool from './toolDraw/drawRectTool';
 interface Events {
   change(type: string): void;
@@ -15,6 +16,7 @@ export default class ToolManager {
   constructor(editor: Editor) {
     this.editor = editor;
     this.registerToolAndHotKey(new DrawRectTool(editor));
+    this.registerToolAndHotKey(new DragCanvasTool(editor));
 
     this.setActiveTool(ToolType.DrawRect);
     this.bindEvent();
