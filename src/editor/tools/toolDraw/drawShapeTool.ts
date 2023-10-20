@@ -1,6 +1,7 @@
 import Editor from '../../editor';
 import { ECursorType, IPoint, IRect, ITool, ToolType } from '../../type';
 import Shape from '../../shape/Shape';
+import { normalizeRect } from '../../utils';
 
 export default abstract class DrawShapeTool implements ITool {
   hotkey = '';
@@ -40,7 +41,6 @@ export default abstract class DrawShapeTool implements ITool {
       e,
       this.editor.setting.get('snapToPixelGrid'),
     );
-    console.log(this.lastDragPoint);
     this.updateRect();
   }
 
@@ -59,12 +59,12 @@ export default abstract class DrawShapeTool implements ITool {
     const width = x - startX;
     const height = y - startY;
 
-    const rect = {
+    const rect = normalizeRect({
       x: startX,
       y: startY,
       width,
       height,
-    };
+    });
     if (this.drawingShape) {
       this.updateShape(rect);
     } else {
