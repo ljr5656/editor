@@ -22,6 +22,8 @@ export interface IRect extends IShape {
   cy?: number;
 }
 
+export interface IEllipse extends IShape {}
+
 export interface IBox {
   x: number;
   y: number;

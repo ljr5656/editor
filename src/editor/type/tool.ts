@@ -16,5 +16,6 @@ export interface IBaseTool {
 export enum ToolType {
   DrawRect = 'drawRect',
   DrawShape = 'drawShape',
+  DrawEllipse = 'drawEllipse',
   DragCanvas = 'dragCanvas',
 }

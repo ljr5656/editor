@@ -1,3 +1,5 @@
+export const DOUBLE_PI = Math.PI * 2;
+
 // 视口坐标->场景坐标
 export const viewportCoordsToSceneUtil = (
   x: number,

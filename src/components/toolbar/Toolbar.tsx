@@ -7,11 +7,13 @@ const Toolbar = () => {
   const onChange = (e) => {
     switch (e.target.value as string) {
       case 'move':
-        debugger;
         editor?.toolManager.setActiveTool(ToolType.DragCanvas);
         break;
       case 'rect':
         editor?.toolManager.setActiveTool(ToolType.DrawRect);
+        break;
+      case 'ellipse':
+        editor?.toolManager.setActiveTool(ToolType.DrawEllipse);
         break;
       case 'zoomIn':
         editor?.zoomIn();
@@ -33,6 +35,7 @@ const Toolbar = () => {
       <Radio.Group onChange={onChange} defaultValue='rect' buttonStyle='solid'>
         <Radio.Button value='move'>move</Radio.Button>
         <Radio.Button value='rect'>rect</Radio.Button>
+        <Radio.Button value='ellipse'>ellipse</Radio.Button>
         <Radio.Button value='zoomIn'>+</Radio.Button>
         <Radio.Button value='zoomIn' disabled>
           {`${getZoom() * 100}%`}
