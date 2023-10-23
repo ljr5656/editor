@@ -1,6 +1,8 @@
 import { IPoint, IRect } from './type';
 
 export const DOUBLE_PI = Math.PI * 2;
+export const PI = Math.PI * 2;
+export const HALF_PI = Math.PI / 2;
 
 // 视口坐标->场景坐标
 export const viewportCoordsToSceneUtil = (
@@ -65,4 +67,60 @@ export function getRectByTwoCoord(point1: IPoint, point2: IPoint): IRect {
  */
 export const remainDecimal = (num: number, precision = 2) => {
   return Number(num.toFixed(precision));
+};
+
+/**
+ * 找出离 value 最近的 segment 的倍数值
+ */
+export const getClosestTimesVal = (value: number, segment: number) => {
+  const n = Math.floor(value / segment);
+  const left = segment * n;
+  const right = segment * (n + 1);
+  return value - left <= right - value ? left : right;
+};
+
+/**
+ * Canvas 中绘制，必须为 x.5 才能绘制一列单独像素，
+ * 否则会因为抗锯齿，绘制两列像素，且一个为半透明，导致一种模糊的效果
+ *
+ * 这个方法会得到值最接近的 x.5 值。
+ */
+export const nearestPixelVal = (n: number) => {
+  const left = Math.floor(n);
+  const right = Math.ceil(n);
+  return (n - left < right - n ? left : right) + 0.5;
+};
+
+export const rotateInCanvas = (
+  ctx: CanvasRenderingContext2D,
+  angle: number,
+  cx: number,
+  cy: number,
+) => {
+  ctx.translate(cx, cy);
+  ctx.rotate(angle);
+  ctx.translate(-cx, -cy);
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const rafThrottle = (callback: (...args: any) => void) => {
+  let requestId: number | undefined;
+
+  const throttled = function (...args: unknown[]) {
+    if (requestId === undefined) {
+      requestId = requestAnimationFrame(() => {
+        requestId = undefined;
+        callback(args);
+      });
+    }
+  };
+
+  throttled.cancel = () => {
+    if (requestId !== undefined) {
+      cancelAnimationFrame(requestId);
+    }
+    requestId = undefined;
+  };
+
+  return throttled;
 };
