@@ -68,9 +68,15 @@ export default class Editor {
     this.canvasElement.style.cursor = cursor;
   }
 
-  zoomIn() {}
-  zoomOut() {}
-  zoomReset() {}
+  zoomIn() {
+    this.zoomManager.zoomIn();
+  }
+  zoomOut() {
+    this.zoomManager.zoomOut();
+  }
+  zoomReset() {
+    this.zoomManager.reset();
+  }
   getZoom() {
     return 1;
   }

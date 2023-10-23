@@ -1,4 +1,4 @@
-import { Radio } from 'antd';
+import { Button, Radio } from 'antd';
 import { EditorContext } from '../../context';
 import { useContext } from 'react';
 import { ToolType } from '../../editor/type';
@@ -27,6 +27,20 @@ const Toolbar = () => {
     }
   };
 
+  const onClick = (type: string) => {
+    switch (type as string) {
+      case 'zoomIn':
+        editor?.zoomIn();
+        break;
+      case 'zoomOut':
+        editor?.zoomOut();
+        break;
+      case 'zoomReset':
+        editor?.zoomReset();
+        break;
+    }
+  };
+
   const getZoom = () => {
     return 1;
   };
@@ -36,13 +50,15 @@ const Toolbar = () => {
         <Radio.Button value='move'>move</Radio.Button>
         <Radio.Button value='rect'>rect</Radio.Button>
         <Radio.Button value='ellipse'>ellipse</Radio.Button>
-        <Radio.Button value='zoomIn'>+</Radio.Button>
-        <Radio.Button value='zoomIn' disabled>
-          {`${getZoom() * 100}%`}
-        </Radio.Button>
-        <Radio.Button value='zoomOut'>-</Radio.Button>
-        <Radio.Button value='zoomReset'>reset</Radio.Button>
       </Radio.Group>
+      <Button.Group>
+        <Button onClick={() => onClick('zoomIn')}>+</Button>
+        <Button onClick={() => onClick('zoomSet')} disabled>
+          {`${getZoom() * 100}%`}
+        </Button>
+        <Button onClick={() => onClick('zoomOut')}>-</Button>
+        <Button onClick={() => onClick('zoomReset')}>reset</Button>
+      </Button.Group>
     </div>
   );
 };

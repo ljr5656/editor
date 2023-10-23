@@ -15,6 +15,8 @@ export default class Setting {
     offsetY: 0,
 
     snapToPixelGrid: true, // 是否吸附到像素网格
+
+    zoomStep: 0.1, // 缩放比例步长
   };
 
   set<K extends keyof Setting['value']>(key: K, value: Setting['value'][K]) {

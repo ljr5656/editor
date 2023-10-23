@@ -1,6 +1,7 @@
 import Editor from './editor';
 import EventEmitter from './eventEmitter';
 import Shape from './shape/Shape';
+import { getDevicePixelRatio } from './utils';
 interface Events {
   render(): void;
 }
@@ -18,7 +19,14 @@ export default class Scene {
   }
   render() {
     const { editor } = this;
-    const { canvasContext: ctx, setting, canvasElement: canvas } = editor;
+    const {
+      canvasContext: ctx,
+      setting,
+      canvasElement: canvas,
+      viewportManager,
+      zoomManager,
+    } = editor;
+    const viewport = viewportManager.getViewport();
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     // 2. 清空画布，然后绘制所有可见元素
@@ -29,8 +37,18 @@ export default class Scene {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
 
+    // 场景坐标转换为视口坐标
+    const dpr = getDevicePixelRatio();
+    const zoom = zoomManager.getZoom();
+    const dx = -viewport.x;
+    const dy = -viewport.y;
+    ctx.scale(dpr * zoom, dpr * zoom);
+    ctx.translate(dx, dy);
+
     this.shapes.forEach((shape) => {
+      ctx.save();
       shape.draw(ctx);
+      ctx.restore();
     });
 
     this.eventEmitter.emit('render');

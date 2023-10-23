@@ -13,12 +13,10 @@ export default class Ellipse extends Shape {
     const cx = x + width / 2;
     const cy = y + height / 2;
 
-    ctx.save();
     ctx.beginPath();
     ctx.ellipse(cx, cy, width / 2, height / 2, 0, 0, DOUBLE_PI);
     ctx.stroke();
     // ctx.fill();
     ctx.closePath();
-    ctx.restore();
   }
 }

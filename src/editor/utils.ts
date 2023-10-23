@@ -58,3 +58,11 @@ export function getRectByTwoCoord(point1: IPoint, point2: IPoint): IRect {
     height: Math.abs(point1.y - point2.y),
   };
 }
+
+/**
+ * 保留两位小数
+ * 如果是 0，丢弃 0
+ */
+export const remainDecimal = (num: number, precision = 2) => {
+  return Number(num.toFixed(precision));
+};

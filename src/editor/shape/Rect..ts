@@ -13,8 +13,6 @@ export default class Rect extends Shape {
 
   draw(ctx: CanvasRenderingContext2D) {
     const { x, y, width, height } = this;
-    ctx.save();
     ctx.strokeRect(x, y, width, height);
-    ctx.restore();
   }
 }
