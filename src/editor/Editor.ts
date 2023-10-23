@@ -1,3 +1,4 @@
+import Ruler from './ruler';
 import Scene from './scene';
 import Setting from './setting';
 import ToolManager from './tools/toolManager';
@@ -18,6 +19,7 @@ export default class Editor {
   viewportManager: ViewportManager;
   scene: Scene;
   toolManager: ToolManager;
+  ruler: Ruler;
   constructor(options: EditorOptions) {
     const { container } = options;
     this.container = container;
@@ -31,8 +33,22 @@ export default class Editor {
     this.viewportManager = new ViewportManager(this);
     this.toolManager = new ToolManager(this);
     this.scene = new Scene(this);
+    this.ruler = new Ruler(this);
 
-    this.scene.render();
+    this.viewportManager.setViewport({
+      x: 0,
+      y: 0,
+      width: this.container.offsetWidth,
+      height: this.container.offsetHeight,
+    });
+
+    /**
+     * setViewport 其实会修改 canvas 的宽高，浏览器的 DOM 更新是异步的，
+     * 所以下面的 render 要异步执行
+     */
+    Promise.resolve().then(() => {
+      this.scene.render();
+    });
   }
 
   createCanvas() {
