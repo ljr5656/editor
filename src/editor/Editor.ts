@@ -61,7 +61,6 @@ export default class Editor {
     canvas.height = container.offsetHeight;
     canvas.width = container.offsetWidth;
     container.appendChild(canvas);
-    canvas.editor = this;
   }
 
   getCursorXY(event: { clientX: number; clientY: number }) {
