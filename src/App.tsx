@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { EditorContext } from './context';
@@ -12,6 +13,10 @@ function App() {
       const _editor = new Editor({
         container: containerRef.current,
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).editor = _editor;
+      const changeViewport = _.throttle(() => {}, 150, { leading: false });
+      window.addEventListener('resize', changeViewport);
       setEditor(_editor);
     }
   }, [containerRef]);
