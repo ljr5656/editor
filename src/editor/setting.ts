@@ -17,6 +17,15 @@ export default class Setting {
     snapToPixelGrid: true, // 是否吸附到像素网格
 
     zoomStep: 0.1, // 缩放比例步长
+
+    /**** 标尺相关 ****/
+    enableRuler: true,
+    minStepInViewport: 50, // 视口区域下的最小步长
+    rulerBgColor: '#fff',
+    rulerStroke: '#e6e6e6',
+    rulerMarkStroke: '#000',
+    rulerWidth: 40, // 宽度
+    rulerMarkSize: 8, // 刻度高度
   };
 
   set<K extends keyof Setting['value']>(key: K, value: Setting['value'][K]) {
