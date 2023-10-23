@@ -4,7 +4,7 @@ import { IBox } from './type';
 import { getDevicePixelRatio } from './utils';
 
 interface Events {
-  xOrYChange(x: number | undefined, y: number): void;
+  viewportChange(x: number, y: number): void;
 }
 export default class ViewportManager {
   private scrollX = 0;
@@ -38,7 +38,14 @@ export default class ViewportManager {
     }
 
     if (prevX !== x || prevY !== y) {
-      this.eventEmitter.emit('xOrYChange', x as number, y as number);
+      this.eventEmitter.emit('viewportChange', x as number, y as number);
     }
+  }
+
+  on(eventName: 'viewportChange', handler: (x: number, y: number) => void) {
+    this.eventEmitter.on(eventName, handler);
+  }
+  off(eventName: 'viewportChange', handler: (x: number, y: number) => void) {
+    this.eventEmitter.off(eventName, handler);
   }
 }
