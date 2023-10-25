@@ -1,5 +1,5 @@
 import Editor from '../editor';
-import { ECursorType, IBox, IPoint, ITool, ToolType } from '../type';
+import { CursorType, IBox, IPoint, ITool, ToolType } from '../type';
 
 export default class DragCanvasTool implements ITool {
   hotkey = '';
@@ -32,11 +32,11 @@ export default class DragCanvasTool implements ITool {
   afterEnd() {}
 
   active() {
-    this.editor.setCursor(ECursorType.Grab);
+    this.editor.setCursor(CursorType.Grab);
   }
 
   inactive() {
-    this.editor.setCursor(ECursorType.Default);
+    this.editor.setCursor(CursorType.Default);
   }
 
   moveExcludeDrag() {}

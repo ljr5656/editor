@@ -3,7 +3,7 @@ export interface IPoint {
   y: number;
 }
 
-export enum ECursorType {
+export enum CursorType {
   Grab = 'grab',
   Grabbing = 'grabbing',
   Default = 'default',

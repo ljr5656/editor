@@ -1,8 +1,9 @@
 import Ruler from './ruler';
 import Scene from './scene';
+import SelectedShapes from './selectedShapes';
 import Setting from './setting';
 import ToolManager from './tools/toolManager';
-import { ECursorType } from './type';
+import { CursorType } from './type';
 import { viewportCoordsToSceneUtil } from './utils';
 import ViewportManager from './viewportManager';
 import ZoomManager from './zoomManager';
@@ -20,6 +21,7 @@ export default class Editor {
   scene: Scene;
   toolManager: ToolManager;
   ruler: Ruler;
+  selectedShapes: SelectedShapes;
   constructor(options: EditorOptions) {
     const { container } = options;
     this.container = container;
@@ -34,6 +36,7 @@ export default class Editor {
     this.toolManager = new ToolManager(this);
     this.scene = new Scene(this);
     this.ruler = new Ruler(this);
+    this.selectedShapes = new SelectedShapes(this);
 
     this.viewportManager.setViewport({
       x: 0,
@@ -79,7 +82,7 @@ export default class Editor {
     return viewportCoordsToSceneUtil(x, y, zoom, scrollX, scrollY, round);
   }
 
-  setCursor(cursor: ECursorType) {
+  setCursor(cursor: CursorType) {
     this.canvasElement.style.cursor = cursor;
   }
 

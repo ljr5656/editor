@@ -26,6 +26,8 @@ export default class Setting {
     rulerMarkStroke: '#000',
     rulerWidth: 40, // 宽度
     rulerMarkSize: 8, // 刻度高度
+
+    selectedBBoxStroke: '#ff0000',
   };
 
   set<K extends keyof Setting['value']>(key: K, value: Setting['value'][K]) {

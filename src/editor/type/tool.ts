@@ -18,4 +18,5 @@ export enum ToolType {
   DrawShape = 'drawShape',
   DrawEllipse = 'drawEllipse',
   DragCanvas = 'dragCanvas',
+  Select = 'select',
 }

@@ -1,4 +1,4 @@
-import { IShape } from '../type';
+import { IPoint, IShape } from '../type';
 export default class Shape {
   x: number = 0;
   y: number = 0;
@@ -26,5 +26,30 @@ export default class Shape {
       const self: any = this;
       self[key] = options[key];
     }
+  }
+
+  hitTest(point: IPoint, padding = 0) {
+    const rect = this.getRect();
+    return (
+      point.x >= rect.x - padding &&
+      point.y >= rect.y - padding &&
+      point.x <= rect.x + rect.width + padding &&
+      point.y <= rect.y + rect.height + padding
+    );
+  }
+
+  getRect() {
+    return {
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+    };
+  }
+  getCenter() {
+    return {
+      x: this.x + this.width / 2,
+      y: this.y + this.height / 2,
+    };
   }
 }

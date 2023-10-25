@@ -1,6 +1,7 @@
 import Editor from './editor';
 import EventEmitter from './eventEmitter';
 import Shape from './shape/Shape';
+import { IPoint } from './type';
 import { getDevicePixelRatio, rafThrottle } from './utils';
 interface Events {
   render(): void;
@@ -26,6 +27,7 @@ export default class Scene {
         canvasElement: canvas,
         viewportManager,
         zoomManager,
+        selectedShapes,
       } = editor;
       const viewport = viewportManager.getViewport();
 
@@ -51,6 +53,7 @@ export default class Scene {
         shape.draw(ctx);
         ctx.restore();
       });
+      this.drawShapesBbox(selectedShapes.getShapes());
 
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.save();
@@ -62,6 +65,32 @@ export default class Scene {
       this.eventEmitter.emit('render');
     }
   });
+
+  getTopHitShape(point: IPoint): Shape | null {
+    let topHitShape: Shape | null = null;
+    // TODO: optimize, use r-tree to reduce time complexity
+    for (let i = this.shapes.length - 1; i >= 0; i--) {
+      const shape = this.shapes[i];
+      if (shape.hitTest(point, 0)) {
+        topHitShape = shape;
+        break;
+      }
+    }
+    return topHitShape;
+  }
+
+  drawShapesBbox(shapes: Shape[]) {
+    if (shapes.length <= 0) return;
+    const { canvasContext: ctx, setting } = this.editor;
+    const bBoxes = shapes.map((shape) => shape.getRect());
+
+    ctx.save();
+    ctx.strokeStyle = setting.get('selectedBBoxStroke');
+    bBoxes.forEach(({ x, y, width, height }) => {
+      ctx.strokeRect(x, y, width, height);
+    });
+    ctx.restore();
+  }
 
   on(eventName: 'render', handler: () => void) {
     this.eventEmitter.on(eventName, handler);

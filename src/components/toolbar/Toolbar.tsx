@@ -9,6 +9,9 @@ const Toolbar = () => {
       case 'move':
         editor?.toolManager.setActiveTool(ToolType.DragCanvas);
         break;
+      case 'select':
+        editor?.toolManager.setActiveTool(ToolType.Select);
+        break;
       case 'rect':
         editor?.toolManager.setActiveTool(ToolType.DrawRect);
         break;
@@ -48,6 +51,7 @@ const Toolbar = () => {
     <div>
       <Radio.Group onChange={onChange} defaultValue='rect' buttonStyle='solid'>
         <Radio.Button value='move'>move</Radio.Button>
+        <Radio.Button value='select'>select</Radio.Button>
         <Radio.Button value='rect'>rect</Radio.Button>
         <Radio.Button value='ellipse'>ellipse</Radio.Button>
       </Radio.Group>
