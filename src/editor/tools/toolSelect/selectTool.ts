@@ -1,12 +1,22 @@
 import Editor from '../../editor';
-import { CursorType, IPoint, ITool, ToolType } from '../../type';
+import { CursorType, IBaseTool, IPoint, ITool, ToolType } from '../../type';
+import SelectMoveTool from './selectMoveTool';
 
+/**几种情况
+ * 1. 选中一个shape
+ * 2. 没选中, 拖拽, 生成选框
+ * 3.
+ */
 export default class SelectTool implements ITool {
   type = ToolType.Select;
   hotkey = '';
   startPoint: IPoint = { x: -1, y: -1 };
+  currStrategy: IBaseTool | null = null;
+  private strategyMove: SelectMoveTool;
 
-  constructor(private editor: Editor) {}
+  constructor(private editor: Editor) {
+    this.strategyMove = new SelectMoveTool(editor);
+  }
 
   active() {
     this.editor.setCursor(CursorType.Default);
@@ -23,13 +33,23 @@ export default class SelectTool implements ITool {
     const topHitShape = scene.getTopHitShape(this.startPoint);
     if (topHitShape) {
       selectedShapes.setShapes([topHitShape]);
+      this.currStrategy = this.strategyMove;
     } else {
       selectedShapes.clear();
     }
     scene.render();
+
+    if (this.currStrategy) {
+      this.currStrategy.active();
+      this.currStrategy.start(e);
+    }
   }
 
-  drag() {}
+  drag(e: PointerEvent) {
+    if (this.currStrategy) {
+      this.currStrategy.drag(e);
+    }
+  }
 
   end() {
     const { editor } = this;
