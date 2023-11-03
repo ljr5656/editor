@@ -1,9 +1,9 @@
 export enum ShapeType {
-  Graph = 'Graph',
+  Shape = 'shape',
   Rect = 'Rect',
-  Ellipse = 'Ellipse',
-  Text = 'Text',
-  Line = 'Line',
+  Ellipse = 'ellipse',
+  Text = 'text',
+  Line = 'line',
 }
 
 export interface IShape {
@@ -29,4 +29,9 @@ export interface IBox {
   y: number;
   width: number;
   height: number;
+}
+
+export enum ControlsType {
+  Rotate = 'rotate',
+  Scale = 'scale',
 }

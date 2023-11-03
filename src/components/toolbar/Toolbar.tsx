@@ -1,9 +1,17 @@
 import { Button, Radio } from 'antd';
 import { EditorContext } from '../../context';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ToolType } from '../../editor/type';
 const Toolbar = () => {
   const editor = useContext(EditorContext);
+  const [zoom, setZoom] = useState<number>(1);
+  useEffect(() => {
+    editor &&
+      editor.zoomManager.on('zoomChange', (zoom, prevZoom) => {
+        debugger;
+        setZoom(zoom);
+      });
+  }, [editor]);
   const onChange = (e) => {
     switch (e.target.value as string) {
       case 'move':
@@ -43,10 +51,6 @@ const Toolbar = () => {
         break;
     }
   };
-
-  const getZoom = () => {
-    return 1;
-  };
   return (
     <div>
       <Radio.Group onChange={onChange} defaultValue='rect' buttonStyle='solid'>
@@ -58,7 +62,7 @@ const Toolbar = () => {
       <Button.Group>
         <Button onClick={() => onClick('zoomIn')}>+</Button>
         <Button onClick={() => onClick('zoomSet')} disabled>
-          {`${getZoom() * 100}%`}
+          {`${Math.floor(zoom * 100)}%`}
         </Button>
         <Button onClick={() => onClick('zoomOut')}>-</Button>
         <Button onClick={() => onClick('zoomReset')}>reset</Button>

@@ -19,6 +19,7 @@ export default class ZoomManager {
   }
 
   setZoom(zoom: number) {
+    this.eventEmitter.emit('zoomChange', zoom, this.zoom);
     this.zoom = zoom;
   }
 
