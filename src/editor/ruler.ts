@@ -58,21 +58,7 @@ export default class Ruler {
     ctx.fillStyle = setting.get('rulerBgColor');
     ctx.fillRect(0, 0, setting.get('rulerWidth'), setting.get('rulerWidth'));
 
-    // 绘制 border
-    ctx.strokeStyle = setting.get('rulerStroke');
-    ctx.beginPath();
-    // 水平 border
-    ctx.moveTo(0, setting.get('rulerWidth') + 0.5);
-    ctx.lineTo(viewportWidth, setting.get('rulerWidth') + 0.5);
-    ctx.stroke();
-    ctx.closePath();
-    // 垂直 border
-    ctx.beginPath();
-    ctx.moveTo(setting.get('rulerWidth') + 0.5, 0);
-    ctx.lineTo(setting.get('rulerWidth') + 0.5, viewportHeight);
-    ctx.stroke();
-    ctx.closePath();
-
+    this.drawBorder();
     ctx.restore();
   }
 
@@ -144,5 +130,25 @@ export default class Ruler {
       rotateInCanvas(ctx, HALF_PI, x, y);
       startYInScene += stepInScene;
     }
+  }
+
+  private drawBorder() {
+    const { canvasContext: ctx, setting, viewportManager } = this.editor;
+    const { width: viewportWidth, height: viewportHeight } =
+      viewportManager.getViewport();
+    // 绘制 border
+    ctx.strokeStyle = setting.get('rulerStroke');
+    ctx.beginPath();
+    // 水平 border
+    ctx.moveTo(0, setting.get('rulerWidth') + 0.5);
+    ctx.lineTo(viewportWidth, setting.get('rulerWidth') + 0.5);
+    ctx.stroke();
+    ctx.closePath();
+    // 垂直 border
+    ctx.beginPath();
+    ctx.moveTo(setting.get('rulerWidth') + 0.5, 0);
+    ctx.lineTo(setting.get('rulerWidth') + 0.5, viewportHeight);
+    ctx.stroke();
+    ctx.closePath();
   }
 }

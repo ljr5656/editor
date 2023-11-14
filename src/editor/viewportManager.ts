@@ -1,6 +1,6 @@
 import Editor from './editor';
 import EventEmitter from './eventEmitter';
-import { IBox } from './type';
+import { IBox, IPoint } from './type';
 import { getDevicePixelRatio } from './utils';
 
 interface Events {
@@ -9,10 +9,10 @@ interface Events {
 export default class ViewportManager {
   private scrollX = 0;
   private scrollY = 0;
-  private eventEmitter = new EventEmitter<Events>();
+  private readonly eventEmitter = new EventEmitter<Events>();
   constructor(private editor: Editor) {}
 
-  getViewport(): IBox {
+  public getViewport(): IBox {
     return {
       x: this.scrollX,
       y: this.scrollY,
@@ -21,7 +21,7 @@ export default class ViewportManager {
     };
   }
 
-  setViewport({ x, y, width, height }: Partial<IBox>) {
+  public setViewport({ x, y, width, height }: Partial<IBox>): void {
     const prevX = this.scrollX;
     const prevY = this.scrollY;
     const dpr = getDevicePixelRatio();
@@ -42,10 +42,24 @@ export default class ViewportManager {
     }
   }
 
-  on(eventName: 'viewportChange', handler: (x: number, y: number) => void) {
+  public getCenter(): IPoint {
+    const { width, height } = this.getViewport();
+    return {
+      x: width / 2,
+      y: height / 2,
+    };
+  }
+
+  public on(
+    eventName: 'viewportChange',
+    handler: (x: number, y: number) => void,
+  ): void {
     this.eventEmitter.on(eventName, handler);
   }
-  off(eventName: 'viewportChange', handler: (x: number, y: number) => void) {
+  public off(
+    eventName: 'viewportChange',
+    handler: (x: number, y: number) => void,
+  ): void {
     this.eventEmitter.off(eventName, handler);
   }
 }

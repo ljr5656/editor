@@ -15,6 +15,7 @@ export interface IShape {
   stroke?: string;
   strokeWidth?: number;
   visible?: boolean;
+  rotation?: number;
 }
 
 export interface IRect extends IShape {

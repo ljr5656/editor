@@ -1,6 +1,6 @@
 export interface ITool extends IBaseTool {
   hotkey: string;
-  type: ToolType;
+  type: EToolType;
   moveExcludeDrag: (event: PointerEvent) => void;
 }
 
@@ -13,7 +13,7 @@ export interface IBaseTool {
   afterEnd: (event: PointerEvent) => void;
 }
 
-export enum ToolType {
+export enum EToolType {
   DrawRect = 'drawRect',
   DrawShape = 'drawShape',
   DrawEllipse = 'drawEllipse',

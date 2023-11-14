@@ -1,11 +1,11 @@
 import Editor from '../../editor';
 import Ellipse from '../../shape/Ellipse';
-import { IRect, ITool, ToolType } from '../../type';
+import { IRect, ITool, EToolType } from '../../type';
 import { normalizeRect } from '../../utils';
 import DrawShapeTool from './drawShapeTool';
 
 export default class DrawEllipseTool extends DrawShapeTool implements ITool {
-  readonly type = ToolType.DrawEllipse;
+  readonly type = EToolType.DrawEllipse;
   constructor(editor: Editor) {
     super(editor);
   }

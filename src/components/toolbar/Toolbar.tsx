@@ -1,30 +1,29 @@
 import { Button, Radio } from 'antd';
 import { EditorContext } from '../../context';
 import { useContext, useEffect, useState } from 'react';
-import { ToolType } from '../../editor/type';
+import { EToolType } from '../../editor/type';
 const Toolbar = () => {
   const editor = useContext(EditorContext);
   const [zoom, setZoom] = useState<number>(1);
   useEffect(() => {
     editor &&
       editor.zoomManager.on('zoomChange', (zoom, prevZoom) => {
-        debugger;
         setZoom(zoom);
       });
   }, [editor]);
   const onChange = (e) => {
     switch (e.target.value as string) {
       case 'move':
-        editor?.toolManager.setActiveTool(ToolType.DragCanvas);
+        editor?.toolManager.setActiveTool(EToolType.DragCanvas);
         break;
       case 'select':
-        editor?.toolManager.setActiveTool(ToolType.Select);
+        editor?.toolManager.setActiveTool(EToolType.Select);
         break;
       case 'rect':
-        editor?.toolManager.setActiveTool(ToolType.DrawRect);
+        editor?.toolManager.setActiveTool(EToolType.DrawRect);
         break;
       case 'ellipse':
-        editor?.toolManager.setActiveTool(ToolType.DrawEllipse);
+        editor?.toolManager.setActiveTool(EToolType.DrawEllipse);
         break;
       case 'zoomIn':
         editor?.zoomIn();

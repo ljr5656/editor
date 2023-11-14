@@ -1,11 +1,11 @@
 import Editor from '../../editor';
-import { CursorType, IPoint, IRect, ITool, ToolType } from '../../type';
+import { CursorType, IPoint, IRect, ITool, EToolType } from '../../type';
 import Shape from '../../shape/Shape';
 import { normalizeRect } from '../../utils';
 
 export default abstract class DrawShapeTool implements ITool {
   hotkey = '';
-  type = ToolType.DrawShape;
+  type = EToolType.DrawShape;
   protected drawingShape: Shape | null = null;
   private startPoint: IPoint = { x: -1, y: -1 };
   private lastDragPoint!: IPoint;

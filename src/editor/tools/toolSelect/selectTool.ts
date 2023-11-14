@@ -1,5 +1,5 @@
 import Editor from '../../editor';
-import { CursorType, IBaseTool, IPoint, ITool, ToolType } from '../../type';
+import { CursorType, IBaseTool, IPoint, ITool, EToolType } from '../../type';
 import SelectMoveTool from './selectMoveTool';
 
 /**几种情况
@@ -8,7 +8,7 @@ import SelectMoveTool from './selectMoveTool';
  * 3.
  */
 export default class SelectTool implements ITool {
-  type = ToolType.Select;
+  type = EToolType.Select;
   hotkey = '';
   startPoint: IPoint = { x: -1, y: -1 };
   currStrategy: IBaseTool | null = null;

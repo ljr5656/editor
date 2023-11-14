@@ -11,64 +11,57 @@ export default class ZoomManager {
   eventEmitter = new EventEmitter<Event>();
   constructor(editor: Editor) {
     this.editor = editor;
-    this.zoom = this.getZoom();
   }
 
-  getZoom() {
+  public getZoom(): number {
     return this.zoom;
   }
 
-  setZoom(zoom: number) {
+  public setZoom(zoom: number): void {
     this.eventEmitter.emit('zoomChange', zoom, this.zoom);
     this.zoom = zoom;
   }
 
-  zoomIn(cx?: number, cy?: number) {
+  public zoomIn(cx?: number, cy?: number): void {
     const zoomStep = this.editor.setting.get('zoomStep');
     const prevZoom = this.zoom;
     const zoom = remainDecimal(prevZoom * (1 + zoomStep));
     this.setZoomAndUpdateViewport(zoom, cx, cy);
   }
 
-  zoomOut(cx?: number, cy?: number) {
+  public zoomOut(cx?: number, cy?: number): void {
     const zoomStep = this.editor.setting.get('zoomStep');
     const prevZoom = this.zoom;
     const zoom = remainDecimal(prevZoom * (1 - zoomStep));
     this.setZoomAndUpdateViewport(zoom, cx, cy);
   }
 
-  reset() {
+  public reset(): void {
     this.setZoomAndUpdateViewport(1);
   }
 
-  setZoomAndUpdateViewport(
+  private setZoomAndUpdateViewport(
     zoom: number,
-    cx?: number | undefined,
-    cy?: number | undefined,
-  ) {
+    cx?: number,
+    cy?: number,
+  ): void {
     this.setZoom(zoom);
     this.setViewportByZoom(zoom, cx, cy);
     this.editor.scene.render();
   }
 
-  setViewportByZoom(
-    prevZoom: number,
-    cx: number | undefined,
-    cy: number | undefined,
-  ) {
+  private setViewportByZoom(zoom: number, cx?: number, cy?: number): void {
     const { viewportManager } = this.editor;
     const { x: scrollX, y: scrollY } = viewportManager.getViewport();
-    const zoom = this.getZoom();
-    if (cx === undefined || cy === undefined) {
-      const center = this.getViewportCenter();
-      cx = center.x;
-      cy = center.y;
-    }
+
+    const { x: centerX, y: centerY } = viewportManager.getCenter();
+    cx = cx !== undefined ? cx : centerX;
+    cy = cy !== undefined ? cy : centerY;
 
     const { x: sceneX, y: sceneY } = viewportCoordsToSceneUtil(
       cx,
       cy,
-      prevZoom,
+      zoom,
       scrollX,
       scrollY,
     );
@@ -81,24 +74,16 @@ export default class ZoomManager {
     });
   }
 
-  private getViewportCenter() {
-    const { width, height } = this.editor.viewportManager.getViewport();
-    return {
-      x: width / 2,
-      y: height / 2,
-    };
-  }
-
-  on(
+  public on(
     eventName: 'zoomChange',
     handler: (zoom: number, prevZoom: number) => void,
-  ) {
+  ): void {
     this.eventEmitter.on(eventName, handler);
   }
-  off(
+  public off(
     eventName: 'zoomChange',
     handler: (zoom: number, prevZoom: number) => void,
-  ) {
+  ): void {
     this.eventEmitter.off(eventName, handler);
   }
 }

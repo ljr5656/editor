@@ -1,9 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export default class EventEmitter<T extends Record<string | symbol, any>> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _eventMap: Record<keyof T, Array<(...args: any[]) => void>> = {} as any;
+  private _eventMap: Record<keyof T, Array<(...args: any[]) => void>> =
+    {} as any;
 
-  on<K extends keyof T>(eventName: K, listener: T[K]) {
+  on<K extends keyof T>(eventName: K, listener: T[K]): EventEmitter<T> {
     if (!this._eventMap[eventName]) {
       this._eventMap[eventName] = [];
     }
@@ -11,7 +11,7 @@ export default class EventEmitter<T extends Record<string | symbol, any>> {
     return this;
   }
 
-  emit<K extends keyof T>(eventName: K,  ...args: Parameters<T[K]>) {
+  emit<K extends keyof T>(eventName: K, ...args: Parameters<T[K]>): boolean {
     const listeners = this._eventMap[eventName];
     if (!listeners || listeners.length === 0) return false;
     listeners.forEach((listener) => {
@@ -20,7 +20,7 @@ export default class EventEmitter<T extends Record<string | symbol, any>> {
     return true;
   }
 
-  off<K extends keyof T>(eventName: K, listener: T[K]) {
+  off<K extends keyof T>(eventName: K, listener: T[K]): EventEmitter<T> {
     const listeners = this._eventMap[eventName];
     if (listeners && listeners.length > 0) {
       const index = listeners.indexOf(listener);
@@ -31,7 +31,5 @@ export default class EventEmitter<T extends Record<string | symbol, any>> {
     return this;
   }
 
-  once() {
-
-  }
+  once() {}
 }

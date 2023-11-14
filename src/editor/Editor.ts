@@ -54,7 +54,7 @@ export default class Editor {
     });
   }
 
-  createCanvas() {
+  private createCanvas(): void {
     const { container } = this;
     container.innerHTML = '';
     const canvas = document.createElement('canvas') as HTMLCanvasElement;
@@ -66,37 +66,37 @@ export default class Editor {
     container.appendChild(canvas);
   }
 
-  getCursorXY(event: { clientX: number; clientY: number }) {
+  public getCursorXY(event: { clientX: number; clientY: number }) {
     return {
       x: event.clientX - this.setting.get('offsetX'),
       y: event.clientY - this.setting.get('offsetY'),
     };
   }
-  getSceneCursorXY(e: PointerEvent, round = false) {
+  public getSceneCursorXY(e: PointerEvent, round = false) {
     const { x, y } = this.getCursorXY(e);
     return this.viewportCoordsToScene(x, y, round);
   }
-  viewportCoordsToScene(x: number, y: number, round = false) {
+  public viewportCoordsToScene(x: number, y: number, round = false) {
     const zoom = this.zoomManager.getZoom();
     const { x: scrollX, y: scrollY } = this.viewportManager.getViewport();
     return viewportCoordsToSceneUtil(x, y, zoom, scrollX, scrollY, round);
   }
 
-  setCursor(cursor: CursorType) {
+  public setCursor(cursor: CursorType) {
     this.canvasElement.style.cursor = cursor;
   }
 
-  zoomIn() {
+  public zoomIn(): void {
     this.zoomManager.zoomIn();
   }
-  zoomOut() {
+  public zoomOut(): void {
     this.zoomManager.zoomOut();
   }
-  zoomReset() {
+  public zoomReset(): void {
     this.zoomManager.reset();
   }
-  getZoom() {
-    return 1;
+  public getZoom(): number {
+    return this.zoomManager.getZoom();
   }
 
   translate() {}

@@ -1,4 +1,4 @@
-import { IPoint, IShape } from '../type';
+import { IBox, IPoint, IShape } from '../type';
 export default class Shape {
   x: number = 0;
   y: number = 0;
@@ -8,6 +8,7 @@ export default class Shape {
   stroke: string = '#000';
   strokeWidth: number = 1;
   visible: boolean = true;
+  rotation?: number;
 
   constructor(options: IShape) {
     this.setOptions(options);
@@ -38,7 +39,7 @@ export default class Shape {
     );
   }
 
-  getRect() {
+  getRect(): IBox {
     return {
       x: this.x,
       y: this.y,
@@ -46,7 +47,8 @@ export default class Shape {
       height: this.height,
     };
   }
-  getCenter() {
+
+  getCenter(): IPoint {
     return {
       x: this.x + this.width / 2,
       y: this.y + this.height / 2,

@@ -1,9 +1,9 @@
 import Editor from '../editor';
-import { CursorType, IBox, IPoint, ITool, ToolType } from '../type';
+import { CursorType, IBox, IPoint, ITool, EToolType } from '../type';
 
 export default class DragCanvasTool implements ITool {
   hotkey = '';
-  type = ToolType.DragCanvas;
+  type = EToolType.DragCanvas;
   private startPoint: IPoint = { x: -1, y: -1 };
   private prevViewport!: IBox;
   constructor(private editor: Editor) {}

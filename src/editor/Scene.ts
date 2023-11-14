@@ -11,56 +11,22 @@ export default class Scene {
   private eventEmitter = new EventEmitter<Events>();
   constructor(private editor: Editor) {}
 
-  addShape(shape: Shape | Shape[]) {
-    if (Array.isArray(shape)) {
-      this.shapes.push(...shape);
-    } else {
-      this.shapes.push(shape);
-    }
+  addShape(shape: Shape | Shape[]): void {
+    this.shapes.push(...(Array.isArray(shape) ? shape : [shape]));
   }
+
   render = rafThrottle(() => {
     {
       const { editor } = this;
-      const {
-        canvasContext: ctx,
-        setting,
-        canvasElement: canvas,
-        viewportManager,
-        zoomManager,
-        selectedShapes,
-      } = editor;
-      const viewport = viewportManager.getViewport();
+      const { canvasContext: ctx } = editor;
 
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      // 2. 清空画布，然后绘制所有可见元素
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // 绘制背景色
-      ctx.save();
-      ctx.fillStyle = setting.get('canvasBgColor');
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.restore();
+      this.initCtx(ctx);
+      this.drawBackground(ctx);
+      this.drawRuler(ctx);
 
-      // 场景坐标转换为视口坐标
-      const dpr = getDevicePixelRatio();
-      const zoom = zoomManager.getZoom();
-      const dx = -viewport.x;
-      const dy = -viewport.y;
-      ctx.scale(dpr * zoom, dpr * zoom);
-      ctx.translate(dx, dy);
-
-      this.shapes.forEach((shape) => {
-        ctx.save();
-        shape.draw(ctx);
-        ctx.restore();
-      });
-      this.drawShapesBbox(selectedShapes.getShapes());
-
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.save();
-      if (setting.get('enableRuler')) {
-        this.editor.ruler.draw();
-      }
-      ctx.restore();
+      this.setTransform(ctx);
+      this.drawShapes(ctx);
+      this.drawSelectedShapesBbox(ctx);
 
       this.eventEmitter.emit('render');
     }
@@ -68,7 +34,6 @@ export default class Scene {
 
   getTopHitShape(point: IPoint): Shape | null {
     let topHitShape: Shape | null = null;
-    // TODO: optimize, use r-tree to reduce time complexity
     for (let i = this.shapes.length - 1; i >= 0; i--) {
       const shape = this.shapes[i];
       if (shape.hitTest(point, 0)) {
@@ -79,11 +44,12 @@ export default class Scene {
     return topHitShape;
   }
 
-  drawShapesBbox(shapes: Shape[]) {
+  private drawSelectedShapesBbox(ctx: CanvasRenderingContext2D): void {
+    const { selectedShapes, setting } = this.editor;
+    const shapes = selectedShapes.getShapes();
     if (shapes.length <= 0) return;
-    const { canvasContext: ctx, setting } = this.editor;
-    const bBoxes = shapes.map((shape) => shape.getRect());
 
+    const bBoxes = shapes.map((shape) => shape.getRect());
     ctx.save();
     ctx.strokeStyle = setting.get('selectedBBoxStroke');
     bBoxes.forEach(({ x, y, width, height }) => {
@@ -92,10 +58,54 @@ export default class Scene {
     ctx.restore();
   }
 
-  on(eventName: 'render', handler: () => void) {
+  private initCtx(ctx: CanvasRenderingContext2D): void {
+    const { width, height } = this.editor.canvasElement;
+    this.resetTransform(ctx);
+    ctx.clearRect(0, 0, width, height);
+  }
+
+  private resetTransform(ctx: CanvasRenderingContext2D): void {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  private drawBackground(ctx: CanvasRenderingContext2D): void {
+    const { canvasElement, setting } = this.editor;
+    const { width, height } = canvasElement;
+    ctx.save();
+    ctx.fillStyle = setting.get('canvasBgColor');
+    ctx.fillRect(0, 0, width, height);
+    ctx.restore();
+  }
+
+  private drawRuler(ctx: CanvasRenderingContext2D): void {
+    const { setting } = this.editor;
+    if (!setting.get('enableRuler')) return;
+    ctx.save();
+    this.editor.ruler.draw();
+    ctx.restore();
+  }
+
+  private drawShapes(ctx: CanvasRenderingContext2D): void {
+    this.shapes.forEach((shape) => {
+      ctx.save();
+      shape.draw(ctx);
+      ctx.restore();
+    });
+  }
+
+  private setTransform(ctx: CanvasRenderingContext2D): void {
+    const { zoomManager, viewportManager } = this.editor;
+    const { x, y } = viewportManager.getViewport();
+    const { zoom } = zoomManager;
+    const dpr = getDevicePixelRatio();
+    ctx.scale(dpr * zoom, dpr * zoom);
+    ctx.translate(-x, -y);
+  }
+
+  on(eventName: 'render', handler: () => void): void {
     this.eventEmitter.on(eventName, handler);
   }
-  off(eventName: 'render', handler: () => void) {
+  off(eventName: 'render', handler: () => void): void {
     this.eventEmitter.off(eventName, handler);
   }
 }

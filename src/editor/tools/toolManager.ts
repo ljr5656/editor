@@ -1,6 +1,6 @@
 import Editor from '../editor';
 import EventEmitter from '../eventEmitter';
-import { ITool, ToolType } from '../type';
+import { ITool, EToolType } from '../type';
 import DragCanvasTool from './dragCanvasTool';
 import DrawEllipseTool from './toolDraw/drawEllipseTool';
 import DrawRectTool from './toolDraw/drawRectTool';
@@ -11,10 +11,10 @@ interface Events {
 export default class ToolManager {
   private editor: Editor;
   private eventEmitter = new EventEmitter<Events>();
-  toolMap = new Map<ToolType, ITool>();
-  hotkeyMap = new Map<string, string>();
-  activeTool: ITool | undefined;
-  isDragging = false;
+  private toolMap = new Map<EToolType, ITool>();
+  private hotkeyMap = new Map<string, EToolType>();
+  private activeTool: ITool | undefined;
+  private isDragging = false;
   constructor(editor: Editor) {
     this.editor = editor;
     this.registerToolAndHotKey(new DrawRectTool(editor));
@@ -22,11 +22,11 @@ export default class ToolManager {
     this.registerToolAndHotKey(new DragCanvasTool(editor));
     this.registerToolAndHotKey(new SelectTool(editor));
 
-    this.setActiveTool(ToolType.DrawRect);
+    this.setActiveTool(EToolType.DrawRect);
     this.bindEvent();
   }
 
-  registerToolAndHotKey(tool: ITool) {
+  private registerToolAndHotKey(tool: ITool): void {
     if (this.toolMap.has(tool.type)) {
       console.warn(`tool "${tool.type}" had exit, replace it!`);
     }
@@ -38,16 +38,16 @@ export default class ToolManager {
     this.hotkeyMap.set(tool.hotkey, tool.type);
   }
 
-  private bindEvent() {
-    let isPressing = false;
+  private bindEvent(): void {
+    let isPressed: boolean = false;
     const handleDown = (e: PointerEvent) => {
+      isPressed = true;
       this.isDragging = false;
-      isPressing = true;
       this.activeTool?.start(e);
     };
 
     const handleMove = (e: PointerEvent) => {
-      if (!this.isDragging && isPressing) {
+      if (!this.isDragging && isPressed) {
         this.isDragging = true;
       }
 
@@ -57,8 +57,9 @@ export default class ToolManager {
     };
 
     const handleUp = (e: PointerEvent) => {
+      this.activeTool?.end(e, this.isDragging);
       this.isDragging = false;
-      isPressing = false;
+      isPressed = false;
     };
 
     const canvas = this.editor.canvasElement;
@@ -67,7 +68,7 @@ export default class ToolManager {
     window.addEventListener('pointerup', handleUp);
   }
 
-  setActiveTool(toolType: ToolType) {
+  private setActiveTool(toolType: EToolType): void {
     const activeTool = this.toolMap.get(toolType);
     if (!activeTool) {
       throw new Error(`没有 ${toolType} 对应的工具对象`);
@@ -77,13 +78,13 @@ export default class ToolManager {
     this.eventEmitter.emit('change', activeTool.type);
   }
 
-  on<K extends keyof Events>(eventName: K, handler: Events[K]) {
+  public on<K extends keyof Events>(eventName: K, handler: Events[K]): void {
     this.eventEmitter.on(eventName, handler);
   }
-  off<K extends keyof Events>(eventName: K, handler: Events[K]) {
+  public off<K extends keyof Events>(eventName: K, handler: Events[K]): void {
     this.eventEmitter.off(eventName, handler);
   }
-  destroy() {
+  public destroy(): void {
     this.activeTool?.inactive();
   }
 }
