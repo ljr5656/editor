@@ -15,6 +15,9 @@ export default class Setting {
     offsetY: 0,
 
     snapToPixelGrid: true, // 是否吸附到像素网格
+    enablePixelGrid: true,
+    minPixelGridZoom: 8, // draw pixel grid When zoom reach this value
+    pixelGridLineColor: '#cccccc55',
 
     zoomStep: 0.1, // 缩放比例步长
 

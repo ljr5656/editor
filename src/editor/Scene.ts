@@ -1,5 +1,6 @@
 import Editor from './editor';
 import EventEmitter from './eventEmitter';
+import Controls from './shape/Controls';
 import Shape from './shape/Shape';
 import { IPoint } from './type';
 import { getDevicePixelRatio, rafThrottle } from './utils';
@@ -22,11 +23,13 @@ export default class Scene {
 
       this.initCtx(ctx);
       this.drawBackground(ctx);
+      this.drawGrid(ctx);
       this.drawRuler(ctx);
 
       this.setTransform(ctx);
       this.drawShapes(ctx);
       this.drawSelectedShapesBbox(ctx);
+      this.drawControls(ctx);
 
       this.eventEmitter.emit('render');
     }
@@ -56,6 +59,17 @@ export default class Scene {
       ctx.strokeRect(x, y, width, height);
     });
     ctx.restore();
+  }
+
+  private drawControls(ctx: CanvasRenderingContext2D): void {
+    const { selectedShapes, controls } = this.editor;
+    const shapes = selectedShapes.getShapes();
+    if (shapes.length <= 0) return;
+
+    const bBoxes = shapes.map((shape) => shape.getRect());
+    bBoxes.forEach((bBox) => {
+      controls.draw(ctx, bBox);
+    });
   }
 
   private initCtx(ctx: CanvasRenderingContext2D): void {
@@ -100,6 +114,20 @@ export default class Scene {
     const dpr = getDevicePixelRatio();
     ctx.scale(dpr * zoom, dpr * zoom);
     ctx.translate(-x, -y);
+  }
+
+  private drawGrid(): void {
+    // if () return
+    const setting = this.editor.setting;
+    const zoom = this.editor.zoomManager.getZoom();
+    if (
+      !setting.get('enablePixelGrid') ||
+      zoom < this.editor.setting.get('minPixelGridZoom')
+    ) {
+      return;
+    }
+
+    this.editor.grid.draw();
   }
 
   on(eventName: 'render', handler: () => void): void {

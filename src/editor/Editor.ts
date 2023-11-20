@@ -1,7 +1,9 @@
+import Grid from './grid';
 import Ruler from './ruler';
 import Scene from './scene';
 import SelectedShapes from './selectedShapes';
 import Setting from './setting';
+import Controls from './shape/Controls';
 import ToolManager from './tools/toolManager';
 import { CursorType } from './type';
 import { viewportCoordsToSceneUtil } from './utils';
@@ -22,6 +24,8 @@ export default class Editor {
   toolManager: ToolManager;
   ruler: Ruler;
   selectedShapes: SelectedShapes;
+  controls: Controls;
+  grid: Grid;
   constructor(options: EditorOptions) {
     const { container } = options;
     this.container = container;
@@ -37,6 +41,8 @@ export default class Editor {
     this.scene = new Scene(this);
     this.ruler = new Ruler(this);
     this.selectedShapes = new SelectedShapes(this);
+    this.controls = new Controls(this);
+    this.grid = new Grid(this);
 
     this.viewportManager.setViewport({
       x: 0,

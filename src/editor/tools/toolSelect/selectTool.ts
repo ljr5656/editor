@@ -1,6 +1,7 @@
 import Editor from '../../editor';
 import { CursorType, IBaseTool, IPoint, ITool, EToolType } from '../../type';
 import SelectMoveTool from './selectMoveTool';
+import SelectResizeTool from './selectResizeTool';
 
 /**几种情况
  * 1. 选中一个shape
@@ -13,9 +14,11 @@ export default class SelectTool implements ITool {
   startPoint: IPoint = { x: -1, y: -1 };
   currStrategy: IBaseTool | null = null;
   private strategyMove: SelectMoveTool;
+  private strategyResize: SelectResizeTool;
 
   constructor(private editor: Editor) {
     this.strategyMove = new SelectMoveTool(editor);
+    this.strategyResize = new SelectResizeTool(editor);
   }
 
   active() {
@@ -26,14 +29,21 @@ export default class SelectTool implements ITool {
     this.editor.setCursor(CursorType.Default);
   }
 
+  /**
+   * 1. 直接选中一个图形
+   * 2. 拖拽产生选区
+   * 3. 选中控制点
+   */
   start(e: PointerEvent) {
     const { editor } = this;
-    const { scene, selectedShapes } = editor;
+    const { scene, selectedShapes, controls } = editor;
     this.startPoint = editor.getSceneCursorXY(e);
     const topHitShape = scene.getTopHitShape(this.startPoint);
     if (topHitShape) {
       selectedShapes.setShapes([topHitShape]);
       this.currStrategy = this.strategyMove;
+    } else if (controls.getActiveControl(this.startPoint)) {
+      this.currStrategy = this.strategyResize;
     } else {
       selectedShapes.clear();
     }
